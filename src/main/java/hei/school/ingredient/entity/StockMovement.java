@@ -3,7 +3,7 @@ package hei.school.ingredient.entity;
 import java.time.Instant;
 
 public class StockMovement {
-    private int id;
+    private Integer id;
     private StockValue stockValue;
     private MouvementType type;
     private Instant creationDatetime;
@@ -11,11 +11,11 @@ public class StockMovement {
     public StockMovement() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

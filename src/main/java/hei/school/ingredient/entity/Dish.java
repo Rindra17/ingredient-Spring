@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Dish {
-    private int id;
+    private Integer id;
     private String name;
     private DishTypeEnum dishType;
     private Double sellingPrice;
@@ -14,7 +14,7 @@ public class Dish {
         this.compositions = new ArrayList<>();
     }
 
-    public Dish(int id, String name, DishTypeEnum dishType, Double sellingPrice) {
+    public Dish(Integer id, String name, DishTypeEnum dishType, Double sellingPrice) {
         this.id = id;
         this.name = name;
         this.dishType = dishType;
@@ -22,11 +22,11 @@ public class Dish {
         this.compositions = new ArrayList<>();
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

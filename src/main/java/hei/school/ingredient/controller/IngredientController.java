@@ -3,7 +3,7 @@ package hei.school.ingredient.controller;
 import hei.school.ingredient.entity.Ingredient;
 import hei.school.ingredient.entity.StockValue;
 import hei.school.ingredient.entity.UnitType;
-import hei.school.ingredient.exception.IngredientExeption;
+import hei.school.ingredient.exception.BadRequestException;
 import hei.school.ingredient.service.IngredientService;
 import hei.school.ingredient.validator.ParamValidator;
 import org.springframework.http.HttpStatus;
@@ -41,7 +41,7 @@ public class IngredientController {
         try {
             ingredient = ingredientService.getIngredientById(id);
         }
-        catch (IngredientExeption e) {
+        catch (BadRequestException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .header("Content-Type", "text/plain")
@@ -71,7 +71,7 @@ public class IngredientController {
                     .header("Content-Type", "application/json")
                     .body(stockValue);
         }
-        catch (IngredientExeption e) {
+        catch (BadRequestException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .header("Content-Type", "text/plain")

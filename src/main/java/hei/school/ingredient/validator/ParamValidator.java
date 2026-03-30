@@ -1,11 +1,11 @@
 package hei.school.ingredient.validator;
 
-import hei.school.ingredient.exception.IngredientExeption;
+import hei.school.ingredient.exception.BadRequestException;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ParamValidator {
-    public void paramValidator (String at, String unit) throws IngredientExeption {
+    public void paramValidator (String at, String unit) throws BadRequestException {
         StringBuilder msg = new StringBuilder();
         int i = 0;
         if (at == null) {
@@ -18,10 +18,10 @@ public class ParamValidator {
         }
         if (!msg.isEmpty()) {
             if (i == 2) {
-            throw new IngredientExeption("Either mandatory query parameter `at` or `unit` is not provided.");
+            throw new BadRequestException("Either mandatory query parameter `at` or `unit` is not provided.");
         }
             else {
-                throw new IngredientExeption(msg.toString());
+                throw new BadRequestException(msg.toString());
             }
         }
     }

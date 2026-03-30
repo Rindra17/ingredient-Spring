@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Ingredient {
-    private int id;
+    private Integer id;
     private String name;
     private double price;
     private CategoryEnum category;
@@ -15,7 +15,7 @@ public class Ingredient {
         this.stockMovementList =new ArrayList<>();
     }
 
-    public Ingredient(int id, String name, double price, CategoryEnum category) {
+    public Ingredient(Integer id, String name, double price, CategoryEnum category) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -23,11 +23,11 @@ public class Ingredient {
         this.stockMovementList =new ArrayList<>();
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

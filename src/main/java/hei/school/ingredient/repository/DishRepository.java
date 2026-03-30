@@ -4,14 +4,10 @@ import hei.school.ingredient.entity.*;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class DishRepository {
@@ -52,6 +48,94 @@ public class DishRepository {
         }
     }
 
+    public Dish findById(Integer id) {
+        String sql = """
+                select  id, name, dish_type, selling_price
+                from dish
+                where id = ?
+                """;
+
+        try (Connection connection = dataSource.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(sql)){
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Dish dish = new Dish();
+                    dish.setId(rs.getInt("id"));
+                    dish.setName(rs.getString("name"));
+                    dish.setDishType(DishTypeEnum.valueOf(rs.getString("dish_type")));
+                    dish.setSellingPrice(rs.getDouble("selling_price"));
+                    return dish;
+                }
+            }
+            return null;
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Integer> filterIngredient(List<Integer> ingIds) {
+       if (ingIds.isEmpty()) {
+           return new ArrayList<>();
+       }
+
+       List<Integer> validIngIds = new ArrayList<>();
+       String placeholders = String.join(",", Collections.nCopies(ingIds.size(), "?"));
+       String sql = "select id from ingredient where id  in (" + placeholders + ")";
+
+       try (Connection connection = dataSource.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(sql)) {
+          for (int i = 0; i < ingIds.size(); i++) {
+              stmt.setInt(i + 1, ingIds.get(i));
+          }
+          try (ResultSet rs = stmt.executeQuery()) {
+              while (rs.next()) {
+                  validIngIds.add(rs.getInt("id"));
+              }
+          }
+          return validIngIds;
+       }
+       catch (SQLException e) {
+           throw new RuntimeException(e);
+       }
+    }
+
+    public void updateDishIngredients (int dishId, List<Integer> ingIds) {
+        String deleteSql = "DELETE FROM dish_ingredient WHERE id_ingredient = ?";
+        String insertSql = """
+           insert into dish_ingredient (id_ingredient,id_dish, required_quantity, unit)
+           values (?, ?, 1, 'KG')
+        """;
+
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement delStmt = connection.prepareStatement(deleteSql);
+                PreparedStatement stmt = connection.prepareStatement(insertSql)) {
+                for (Integer ingId : ingIds) {
+                    delStmt.setInt(1, ingId);
+                    delStmt.addBatch();
+                }
+                delStmt.executeBatch();
+
+                for (Integer ingId : ingIds) {
+                    stmt.setInt(1, ingId);
+                    stmt.setInt(2, dishId);
+                    stmt.addBatch();
+                }
+                stmt.executeBatch();
+                connection.commit();
+            }
+            catch (SQLException e) {
+                connection.rollback();
+                throw new RuntimeException(e);
+            }
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private DishIngredient getDishIngredient(Dish dish){
         String sql = """
                 select di.id, di.id_dish, di.required_quantity, di.unit, i.id as ing_id, i.name as ing_name, i.price, i.category
@@ -66,8 +150,7 @@ public class DishRepository {
             stmt.setInt(1, dish.getId());
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    dishIngredient.setId(rs.getInt("id"));
-                    dishIngredient.setQuantityRequired(rs.getInt("required_quantity"));
+                    dishIngredient.setId(rs.getInt("id")); dishIngredient.setQuantityRequired(rs.getInt("required_quantity"));
                     dishIngredient.setUnit(UnitType.valueOf(rs.getString("unit")));
 
                     Ingredient ing = new Ingredient();

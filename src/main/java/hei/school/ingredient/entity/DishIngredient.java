@@ -3,7 +3,7 @@ package hei.school.ingredient.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class DishIngredient {
-    private int id;
+    private Integer id;
     @JsonIgnore
     private Dish dish;
     private Ingredient ingredient;
@@ -13,11 +13,11 @@ public class DishIngredient {
     public DishIngredient() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

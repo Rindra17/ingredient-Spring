@@ -3,7 +3,7 @@ package hei.school.ingredient.service;
 import hei.school.ingredient.entity.Ingredient;
 import hei.school.ingredient.entity.StockValue;
 import hei.school.ingredient.entity.UnitType;
-import hei.school.ingredient.exception.IngredientExeption;
+import hei.school.ingredient.exception.BadRequestException;
 import hei.school.ingredient.repository.IngredientRepository;
 import hei.school.ingredient.repository.StockMovementRepository;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class IngredientService {
         Ingredient ingredient = ingredientRepository.findById(id);
 
         if (ingredient == null){
-            throw new IngredientExeption("Ingredient id " + id + " not found");
+            throw new BadRequestException("Ingredient id " + id + " not found");
         }
         ingredient.setStockMovementList(
                 stockMovementRepository.findByIngredientId(ingredient.getId())
