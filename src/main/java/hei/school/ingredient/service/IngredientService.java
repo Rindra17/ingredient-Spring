@@ -3,7 +3,7 @@ package hei.school.ingredient.service;
 import hei.school.ingredient.entity.Ingredient;
 import hei.school.ingredient.entity.StockValue;
 import hei.school.ingredient.entity.UnitType;
-import hei.school.ingredient.exeptions.IngredientExeption;
+import hei.school.ingredient.exception.IngredientExeption;
 import hei.school.ingredient.repository.IngredientRepository;
 import hei.school.ingredient.repository.StockMovementRepository;
 import org.springframework.stereotype.Service;
@@ -21,8 +21,8 @@ public class IngredientService {
         this.stockMovementRepository = stockMovementRepository;
     }
 
-    public List<Ingredient> getAllIngredients(int page, int size) {
-        List<Ingredient> ingredients = ingredientRepository.findAll(page, size);
+    public List<Ingredient> getAllIngredients() {
+        List<Ingredient> ingredients = ingredientRepository.findAll();
 
         for(Ingredient ingredient : ingredients){
             ingredient.setStockMovementList(

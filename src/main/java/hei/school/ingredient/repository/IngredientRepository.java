@@ -20,32 +20,27 @@ public class IngredientRepository {
         this.dataSource = dataSource;
     }
 
-    public List<Ingredient> findAll(int page, int size) {
+    public List<Ingredient> findAll() {
         String sql = """
                 select id, name, category, price
                 from ingredient
                 order by id
-                limit ? offset ?
                 """;
         List<Ingredient> ingredients = new ArrayList<>();
-        int offset = (page - 1) * size;
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql);) {
-                stmt.setInt(1, size);
-                stmt.setInt(2, offset);
-                try (ResultSet rs = stmt.executeQuery()) {
-                    while(rs.next()) {
-                        Ingredient ingredient = new Ingredient();
-                        ingredient.setId(rs.getInt("id"));
-                        ingredient.setName(rs.getString("name"));
-                        ingredient.setCategory(CategoryEnum.valueOf(rs.getString("category")));
-                        ingredient.setPrice(rs.getDouble("price"));
+             PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+                while(rs.next()) {
+                    Ingredient ingredient = new Ingredient();
+                    ingredient.setId(rs.getInt("id"));
+                    ingredient.setName(rs.getString("name"));
+                    ingredient.setCategory(CategoryEnum.valueOf(rs.getString("category")));
+                    ingredient.setPrice(rs.getDouble("price"));
 
-                        ingredients.add(ingredient);
-                    }
-                    return ingredients;
+                    ingredients.add(ingredient);
                 }
+            return ingredients;
         }
         catch (SQLException e){
             throw new RuntimeException(e);

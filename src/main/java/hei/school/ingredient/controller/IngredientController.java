@@ -1,10 +1,9 @@
 package hei.school.ingredient.controller;
 
 import hei.school.ingredient.entity.Ingredient;
-import hei.school.ingredient.entity.StockMovement;
 import hei.school.ingredient.entity.StockValue;
 import hei.school.ingredient.entity.UnitType;
-import hei.school.ingredient.exeptions.IngredientExeption;
+import hei.school.ingredient.exception.IngredientExeption;
 import hei.school.ingredient.service.IngredientService;
 import hei.school.ingredient.validator.ParamValidator;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,7 @@ import java.util.List;
 @RestController
 public class IngredientController {
     private final ParamValidator paramValidator;
-    private IngredientService ingredientService;
+    private final IngredientService ingredientService;
 
     public IngredientController(IngredientService ingredientService, ParamValidator paramValidator){
         this.ingredientService = ingredientService;
@@ -29,10 +28,7 @@ public class IngredientController {
 
     @GetMapping("/ingredients")
     public ResponseEntity<?> getIngredients(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
-    ){
-        List<Ingredient> ingredients = ingredientService.getAllIngredients(page, size);
+    ){ List<Ingredient> ingredients = ingredientService.getAllIngredients();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("Content-Type", "application/json")

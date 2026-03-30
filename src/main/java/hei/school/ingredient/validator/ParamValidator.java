@@ -1,6 +1,6 @@
 package hei.school.ingredient.validator;
 
-import hei.school.ingredient.exeptions.IngredientExeption;
+import hei.school.ingredient.exception.IngredientExeption;
 import org.springframework.stereotype.Component;
 
 @Component
