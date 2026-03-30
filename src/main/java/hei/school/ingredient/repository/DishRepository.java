@@ -35,8 +35,7 @@ public class DishRepository {
                 Object sellingPrice = rs.getObject("selling_price");
                 dish.setSellingPrice(sellingPrice != null ? rs.getDouble("selling_price") : null);
 
-                List<DishIngredient> ingredients = new ArrayList<>();
-                ingredients.add(getDishIngredient(dish));
+                List<DishIngredient> ingredients = getDishIngredient(dish);
 
                 dish.setCompositions(ingredients);
                 dishes.add(dish);
@@ -102,7 +101,7 @@ public class DishRepository {
     }
 
     public void updateDishIngredients (int dishId, List<Integer> ingIds) {
-        String deleteSql = "DELETE FROM dish_ingredient WHERE id_ingredient = ?";
+        String deleteSql = "DELETE FROM dish_ingredient WHERE id_dish = ?";
         String insertSql = """
            insert into dish_ingredient (id_ingredient,id_dish, required_quantity, unit)
            values (?, ?, 1, 'KG')
@@ -136,20 +135,21 @@ public class DishRepository {
         }
     }
 
-    private DishIngredient getDishIngredient(Dish dish){
+    private List<DishIngredient> getDishIngredient(Dish dish){
         String sql = """
                 select di.id, di.id_dish, di.required_quantity, di.unit, i.id as ing_id, i.name as ing_name, i.price, i.category
                    from dish_ingredient di
                 join ingredient i on di.id_ingredient = i.id
                 where di.id_dish = ?
                 """;
-        DishIngredient dishIngredient = new DishIngredient();
+        List<DishIngredient> dishIngredients = new ArrayList<>();
 
         try(Connection connection = dataSource.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, dish.getId());
             try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
+                while (rs.next()) {
+                    DishIngredient dishIngredient = new DishIngredient();
                     dishIngredient.setId(rs.getInt("id")); dishIngredient.setQuantityRequired(rs.getInt("required_quantity"));
                     dishIngredient.setUnit(UnitType.valueOf(rs.getString("unit")));
 
@@ -161,9 +161,11 @@ public class DishRepository {
 
                     dishIngredient.setDish(dish);
                     dishIngredient.setIngredient(ing);
+
+                    dishIngredients.add(dishIngredient);
                 }
             }
-            return dishIngredient;
+            return dishIngredients;
         }
         catch (SQLException e) {
             throw new RuntimeException(e);

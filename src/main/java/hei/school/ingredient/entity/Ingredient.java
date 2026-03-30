@@ -1,5 +1,7 @@
 package hei.school.ingredient.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,8 @@ public class Ingredient {
     private String name;
     private double price;
     private CategoryEnum category;
+
+    @JsonIgnore
     private List<StockMovement> stockMovementList;
 
     public Ingredient() {
