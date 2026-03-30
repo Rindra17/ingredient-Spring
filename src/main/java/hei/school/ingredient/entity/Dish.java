@@ -1,5 +1,8 @@
 package hei.school.ingredient.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +11,7 @@ public class Dish {
     private String name;
     private DishTypeEnum dishType;
     private Double sellingPrice;
+    @JsonIgnore
     private List<DishIngredient> compositions;
 
     public Dish() {
@@ -54,11 +58,17 @@ public class Dish {
         this.sellingPrice = sellingPrice;
     }
 
+    @JsonIgnore
     public List<DishIngredient> getCompositions() {
         return compositions;
     }
 
     public void setCompositions(List<DishIngredient> compositions) {
         this.compositions = compositions;
+    }
+
+    @JsonProperty("Ingredients")
+    public List<Ingredient> getIngredients() {
+        return compositions.stream().map(DishIngredient::getIngredient).toList();
     }
 }

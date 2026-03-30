@@ -74,34 +74,19 @@ public class DishRepository {
         }
     }
 
-    public List<Integer> filterIngredient(List<Integer> ingIds) {
-       if (ingIds.isEmpty()) {
-           return new ArrayList<>();
-       }
+    public void detachIngredients (int dishId) {
+        String deleteSql = "DELETE FROM dish_ingredient WHERE id_dish = ?";
 
-       List<Integer> validIngIds = new ArrayList<>();
-       String placeholders = String.join(",", Collections.nCopies(ingIds.size(), "?"));
-       String sql = "select id from ingredient where id  in (" + placeholders + ")";
-
-       try (Connection connection = dataSource.getConnection();
-            PreparedStatement stmt = connection.prepareStatement(sql)) {
-          for (int i = 0; i < ingIds.size(); i++) {
-              stmt.setInt(i + 1, ingIds.get(i));
-          }
-          try (ResultSet rs = stmt.executeQuery()) {
-              while (rs.next()) {
-                  validIngIds.add(rs.getInt("id"));
-              }
-          }
-          return validIngIds;
-       }
-       catch (SQLException e) {
-           throw new RuntimeException(e);
-       }
+        try (Connection connection = dataSource.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(deleteSql)) {
+            stmt.setInt(1, dishId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void updateDishIngredients (int dishId, List<Integer> ingIds) {
-        String deleteSql = "DELETE FROM dish_ingredient WHERE id_dish = ?";
+    public void attachIngredients (int dishId, List<Integer> ingIds) {
         String insertSql = """
            insert into dish_ingredient (id_ingredient,id_dish, required_quantity, unit)
            values (?, ?, 1, 'KG')
@@ -109,14 +94,7 @@ public class DishRepository {
 
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
-            try (PreparedStatement delStmt = connection.prepareStatement(deleteSql);
-                PreparedStatement stmt = connection.prepareStatement(insertSql)) {
-                for (Integer ingId : ingIds) {
-                    delStmt.setInt(1, ingId);
-                    delStmt.addBatch();
-                }
-                delStmt.executeBatch();
-
+            try (PreparedStatement stmt = connection.prepareStatement(insertSql)) {
                 for (Integer ingId : ingIds) {
                     stmt.setInt(1, ingId);
                     stmt.setInt(2, dishId);

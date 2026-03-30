@@ -29,11 +29,10 @@ public class DishService {
     }
 
     public Dish updateIngredient(int id, List<Integer> ingIds) {
-        Dish dish = findById(id);
+        findById(id);
+        dishRepository.detachIngredients(id);
+        dishRepository.attachIngredients(id, ingIds);
 
-        List<Integer> validIds = dishRepository.filterIngredient(ingIds);
-
-        dishRepository.updateDishIngredients(dish.getId(), validIds);
-        return dish;
+        return this.findById(id);
     }
 }
