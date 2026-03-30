@@ -2,13 +2,13 @@ package hei.school.ingredient.entity;
 
 import java.time.Instant;
 
-public class StockMouvement {
+public class StockMovement {
     private int id;
-    private StockValue value;
+    private StockValue stockValue;
     private MouvementType type;
     private Instant creationDatetime;
 
-    public StockMouvement() {
+    public StockMovement() {
     }
 
     public int getId() {
@@ -19,13 +19,14 @@ public class StockMouvement {
         this.id = id;
     }
 
-    public StockValue getValue() {
-        return value;
+    public StockValue getStockValue() {
+        return stockValue;
     }
 
-    public void setValue(StockValue value) {
-        this.value = value;
+    public void setStockValue(StockValue value) {
+        this.stockValue = value;
     }
+
 
     public MouvementType getType() {
         return type;

@@ -8,10 +8,10 @@ public class Ingredient {
     private String name;
     private double price;
     private CategoryEnum category;
-    private List<StockMouvement> stockMouvementList;
+    private List<StockMovement> stockMovementList;
 
     public Ingredient() {
-        this.stockMouvementList =new ArrayList<>();
+        this.stockMovementList =new ArrayList<>();
     }
 
     public Ingredient(int id, String name, double price, CategoryEnum category) {
@@ -19,7 +19,7 @@ public class Ingredient {
         this.name = name;
         this.price = price;
         this.category = category;
-        this.stockMouvementList =new ArrayList<>();
+        this.stockMovementList =new ArrayList<>();
     }
 
     public int getId() {
@@ -54,11 +54,11 @@ public class Ingredient {
         this.category = category;
     }
 
-    public List<StockMouvement> getStockMouvementList() {
-        return stockMouvementList;
+    public List<StockMovement> getStockMouvementList() {
+        return stockMovementList;
     }
 
-    public void setStockMouvementList(List<StockMouvement> stockMouvementList) {
-        this.stockMouvementList = stockMouvementList != null ? stockMouvementList : new ArrayList<>();
+    public void setStockMouvementList(List<StockMovement> stockMovementList) {
+        this.stockMovementList = stockMovementList != null ? stockMovementList : new ArrayList<>();
     }
 }
