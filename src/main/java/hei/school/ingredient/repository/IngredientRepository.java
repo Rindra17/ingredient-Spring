@@ -14,7 +14,7 @@ import java.util.List;
 
 @Repository
 public class IngredientRepository {
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
     public IngredientRepository(DataSource dataSource) {
         this.dataSource = dataSource;

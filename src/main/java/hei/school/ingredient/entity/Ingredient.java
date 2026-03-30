@@ -59,6 +59,7 @@ public class Ingredient {
         this.category = category;
     }
 
+    @JsonIgnore
     public List<StockMovement> getStockMouvementList() {
         return stockMovementList;
     }
