@@ -64,6 +64,10 @@ public class DishRepository {
                     dish.setName(rs.getString("name"));
                     dish.setDishType(DishTypeEnum.valueOf(rs.getString("dish_type")));
                     dish.setSellingPrice(rs.getDouble("selling_price"));
+
+                    List<DishIngredient> ingredients = getDishIngredient(dish);
+                    dish.setCompositions(ingredients);
+
                     return dish;
                 }
             }
