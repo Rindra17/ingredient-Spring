@@ -1,10 +1,12 @@
 package hei.school.ingredient.controller;
 
 import hei.school.ingredient.entity.Ingredient;
+import hei.school.ingredient.exeptions.IngredientExeption;
 import hei.school.ingredient.service.IngredientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,5 +30,23 @@ public class IngredientController {
                 .status(HttpStatus.OK)
                 .header("Content-Type", "application/json")
                 .body(ingredients);
+    }
+
+    @GetMapping("/ingredients/{id}")
+    public ResponseEntity<?> getIngredientById(@PathVariable int id){
+        Ingredient ingredient;
+        try {
+            ingredient = ingredientService.getIngredientById(id);
+        }
+        catch (IngredientExeption e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .header("Content-Type", "text/plain")
+                    .body(e.getMessage());
+        }
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header("Content-Type", "application/json")
+                .body(ingredient);
     }
 }

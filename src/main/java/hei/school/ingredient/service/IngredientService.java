@@ -1,6 +1,7 @@
 package hei.school.ingredient.service;
 
 import hei.school.ingredient.entity.Ingredient;
+import hei.school.ingredient.exeptions.IngredientExeption;
 import hei.school.ingredient.repository.IngredientRepository;
 import hei.school.ingredient.repository.StockMovementRepository;
 import org.springframework.stereotype.Service;
@@ -26,5 +27,16 @@ public class IngredientService {
             );
         }
         return ingredients;
+    }
+
+    public Ingredient getIngredientById(int id){
+        Ingredient ingredient = ingredientRepository.findById(id);
+        if (ingredient == null){
+            throw new IngredientExeption("Ingredient id " + id + " not found");
+        }
+        ingredient.setStockMouvementList(
+                stockMovementRepository.findByIngredientId(ingredient.getId())
+        );
+        return ingredient;
     }
 }
