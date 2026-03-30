@@ -1,5 +1,6 @@
 package hei.school.ingredient.entity;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +59,25 @@ public class Ingredient {
         return stockMovementList;
     }
 
-    public void setStockMouvementList(List<StockMovement> stockMovementList) {
+    public void setStockMovementList(List<StockMovement> stockMovementList) {
         this.stockMovementList = stockMovementList != null ? stockMovementList : new ArrayList<>();
+    }
+
+    public StockValue getStockValueAt (Instant t, UnitType unit) {
+        double total = 0;
+
+        for (StockMovement stockMovement : stockMovementList) {
+            if (!stockMovement.getCreationDatetime().isAfter(t)) {
+                if(stockMovement.getType() == MouvementType.IN
+                        && stockMovement.getStockValue().getUnit().equals(unit)) {
+                    total += stockMovement.getStockValue().getQuantity();
+                }
+                else if (stockMovement.getType() == MouvementType.OUT
+                        && stockMovement.getStockValue().getUnit().equals(unit)) {
+                   total -= stockMovement.getStockValue().getQuantity();
+                }
+            }
+        }
+        return new StockValue(total, unit);
     }
 }

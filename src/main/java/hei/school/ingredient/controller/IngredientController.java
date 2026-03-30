@@ -1,6 +1,8 @@
 package hei.school.ingredient.controller;
 
 import hei.school.ingredient.entity.Ingredient;
+import hei.school.ingredient.entity.StockMovement;
+import hei.school.ingredient.entity.StockValue;
 import hei.school.ingredient.exeptions.IngredientExeption;
 import hei.school.ingredient.service.IngredientService;
 import org.springframework.http.HttpStatus;
@@ -48,5 +50,27 @@ public class IngredientController {
                 .status(HttpStatus.OK)
                 .header("Content-Type", "application/json")
                 .body(ingredient);
+    }
+
+    @GetMapping("/ingredients/{id}/stock")
+    public ResponseEntity<?> getIngredientStock(
+            @PathVariable int id,
+            @RequestParam(required = false) String at,
+            @RequestParam(required = false) String unit){
+        StockValue stockValue;
+        try {
+            stockValue = ingredientService.getStockValueAt(id, at, unit);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .header("Content-Type", "application/json")
+                    .body(stockValue);
+        }
+        catch (IngredientExeption e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .header("Content-Type", "text/plain")
+                    .body(e.getMessage());
+        }
     }
 }
