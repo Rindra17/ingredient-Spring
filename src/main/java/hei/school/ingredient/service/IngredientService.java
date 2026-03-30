@@ -8,13 +8,13 @@ import java.util.List;
 
 @Service
 public class IngredientService {
-    private IngredientRepository ingredientRepository;
+    private final IngredientRepository ingredientRepository;
 
     public IngredientService(IngredientRepository ingredientRepository) {
         this.ingredientRepository = ingredientRepository;
     }
 
-    public List<Ingredient> getAllIngredients(){
-        return ingredientRepository.findAll();
+    public List<Ingredient> getAllIngredients(int page, int size) {
+        return ingredientRepository.findAll(page, size);
     }
 }
