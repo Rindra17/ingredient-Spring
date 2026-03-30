@@ -3,8 +3,10 @@ package hei.school.ingredient.controller;
 import hei.school.ingredient.entity.Ingredient;
 import hei.school.ingredient.entity.StockMovement;
 import hei.school.ingredient.entity.StockValue;
+import hei.school.ingredient.entity.UnitType;
 import hei.school.ingredient.exeptions.IngredientExeption;
 import hei.school.ingredient.service.IngredientService;
+import hei.school.ingredient.validator.ParamValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,14 +14,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Instant;
 import java.util.List;
 
 @RestController
 public class IngredientController {
+    private final ParamValidator paramValidator;
     private IngredientService ingredientService;
 
-    public IngredientController(IngredientService ingredientService){
+    public IngredientController(IngredientService ingredientService, ParamValidator paramValidator){
         this.ingredientService = ingredientService;
+        this.paramValidator = paramValidator;
     }
 
     @GetMapping("/ingredients")
@@ -59,7 +64,11 @@ public class IngredientController {
             @RequestParam(required = false) String unit){
         StockValue stockValue;
         try {
-            stockValue = ingredientService.getStockValueAt(id, at, unit);
+            paramValidator.paramValidator(at, unit);
+            Instant time = Instant.parse(at);
+            UnitType unitType = UnitType.valueOf(unit);
+
+            stockValue = ingredientService.getStockValueAt(id, time, unitType);
 
             return ResponseEntity
                     .status(HttpStatus.OK)

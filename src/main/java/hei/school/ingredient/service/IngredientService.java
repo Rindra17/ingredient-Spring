@@ -44,16 +44,10 @@ public class IngredientService {
         return ingredient;
     }
 
-    public StockValue getStockValueAt (int id, String at, String unit){
+    public StockValue getStockValueAt (int id, Instant at, UnitType unit){
         Ingredient ingredient = getIngredientById(id);
-        if (at == null || unit == null) {
-            throw new IngredientExeption("Either mandatory query parameter `at` or `unit` is not provided.");
-        }
 
-        Instant instant = Instant.parse(at);
-        UnitType uniteType = UnitType.valueOf(unit);
-
-        return ingredient.getStockValueAt(instant, uniteType);
+        return ingredient.getStockValueAt(at, unit);
     }
 
 }
