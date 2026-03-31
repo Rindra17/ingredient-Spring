@@ -1,9 +1,10 @@
 package hei.school.ingredient.service;
 
 import hei.school.ingredient.entity.Ingredient;
+import hei.school.ingredient.entity.StockMovement;
 import hei.school.ingredient.entity.StockValue;
 import hei.school.ingredient.entity.UnitType;
-import hei.school.ingredient.exception.BadRequestException;
+import hei.school.ingredient.exception.NotFoundException;
 import hei.school.ingredient.repository.IngredientRepository;
 import hei.school.ingredient.repository.StockMovementRepository;
 import org.springframework.stereotype.Service;
@@ -22,25 +23,15 @@ public class IngredientService {
     }
 
     public List<Ingredient> getAllIngredients() {
-        List<Ingredient> ingredients = ingredientRepository.findAll();
-
-        for(Ingredient ingredient : ingredients){
-            ingredient.setStockMovementList(
-                    stockMovementRepository.findByIngredientId(ingredient.getId())
-            );
-        }
-        return ingredients;
+        return ingredientRepository.findAll();
     }
 
     public Ingredient getIngredientById(int id){
         Ingredient ingredient = ingredientRepository.findById(id);
 
         if (ingredient == null){
-            throw new BadRequestException("Ingredient id " + id + " not found");
+            throw new NotFoundException("Ingredient id " + id + " not found");
         }
-        ingredient.setStockMovementList(
-                stockMovementRepository.findByIngredientId(ingredient.getId())
-        );
         return ingredient;
     }
 
@@ -48,6 +39,10 @@ public class IngredientService {
         Ingredient ingredient = getIngredientById(id);
 
         return ingredient.getStockValueAt(at, unit);
+    }
+
+    public List<StockMovement> getStockMovement(int id, Instant from, Instant to) {
+        return stockMovementRepository.findByIngredientId(id, from, to);
     }
 
 }

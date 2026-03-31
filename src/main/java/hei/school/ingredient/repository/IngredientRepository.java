@@ -2,6 +2,7 @@ package hei.school.ingredient.repository;
 
 import hei.school.ingredient.entity.CategoryEnum;
 import hei.school.ingredient.entity.Ingredient;
+import hei.school.ingredient.entity.StockMovement;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;

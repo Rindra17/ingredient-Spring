@@ -7,27 +7,27 @@ import hei.school.ingredient.entity.UnitType;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class StockMovementRepository {
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
     public StockMovementRepository(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    public List<StockMovement> findByIngredientId(int ingredientId) {
+    public List<StockMovement> findByIngredientId(int ingredientId, Instant from, Instant to) {
 
         String sql = """
             SELECT id, quantity, unit, type, creation_datetime
             FROM stock_movement
             WHERE id_ingredient = ?
+            and creation_datetime >= ?
+            and creation_datetime <= ?
             ORDER BY creation_datetime
         """;
 
@@ -37,6 +37,8 @@ public class StockMovementRepository {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, ingredientId);
+            stmt.setTimestamp(2, Timestamp.from(from));
+            stmt.setTimestamp(3, Timestamp.from(to));
             try(ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
