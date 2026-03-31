@@ -1,9 +1,6 @@
 package hei.school.ingredient.service;
 
-import hei.school.ingredient.entity.Ingredient;
-import hei.school.ingredient.entity.StockMovement;
-import hei.school.ingredient.entity.StockValue;
-import hei.school.ingredient.entity.UnitType;
+import hei.school.ingredient.entity.*;
 import hei.school.ingredient.exception.NotFoundException;
 import hei.school.ingredient.repository.IngredientRepository;
 import hei.school.ingredient.repository.StockMovementRepository;
@@ -43,6 +40,11 @@ public class IngredientService {
 
     public List<StockMovement> getStockMovement(int id, Instant from, Instant to) {
         return stockMovementRepository.findByIngredientId(id, from, to);
+    }
+
+    public List<StockMovement> saveStockMovement(int id, List<CreateMovement> movements) {
+
+        return stockMovementRepository.saveStockMovements(id, movements);
     }
 
 }
